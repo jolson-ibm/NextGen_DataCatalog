@@ -1,0 +1,20 @@
+name: 📖 Roadmap Modification  
+description: Request modification to the project roadmap / roadshow / pitch deck.  
+title: "[Roadmap/Roadshow/Pitch Deck] "  
+labels: roadmap 
+assignees: [jolson-ibm]
+projects: [The-AI-Alliance/40]
+body:
+- type: checkboxes
+  attributes:
+    label: Is there an existing issue for this?
+    description: Please search to see if an issue already exists that is similar to your issue/suggestion.
+    options:
+    - label: I have searched the existing issues
+      required: true
+- type: textarea
+  attributes:
+    label: Proposed Changes
+    description: |
+      Describe your proposed changes in detail:
+      * Content to add/remove
