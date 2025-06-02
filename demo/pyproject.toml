@@ -1,0 +1,20 @@
+[project]
+name = "nextgendcdemo"
+version = "0.1.0"
+description = "Demonstration of DataHub as a potential data catalog"
+authors = [
+    {name = "Data Team",email = "data@theaialliance.ai"}
+]
+license = {text = "Apache License Version 2.0"}
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "acryl-datahub[datahub-rest] (>=1.1.0,<2.0.0)",
+    "awswrangler (>=3.11.0,<4.0.0)",
+    "pandas (>=2.2.3,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
