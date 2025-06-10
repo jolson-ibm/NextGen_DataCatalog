@@ -20,6 +20,7 @@ from datahub.metadata.schema_classes import (
 )
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.specific.dataset import DatasetPatchBuilder
+from datahub.configuration.common import OperationalError
 
 import pandas as pd
 import json
@@ -36,10 +37,14 @@ sample_data_set = "james-burton/wine_reviews"
 source_platform = "huggingface"
 
 current_time_millis = current_milli_time()
+load_errors = 0
+error_datasets = []
 
 df_all = pd.read_parquet("../data")
+# Optionally, use the next line to filter for testing.
+# if doing so, change the line beneath it to use df instead of df_all.
 df = df_all.query(f"dataset == '{sample_data_set}'")
-for index, row in df.iterrows():
+for index, row in df_all.iterrows():
     if row["response"] not in [400, 401]:
         croissant_dict = json.loads(row["croissant"])
         datahub_dict = {}
@@ -130,7 +135,14 @@ for index, row in df.iterrows():
         )
 
         # Emit the metadata
-        emitter.emit(mcp)
+        try:
+            emitter.emit(mcp)
+        except OperationalError as e:
+            load_errors = load_errors + 1
+            this_error = {}
+            this_error["dataset"] = datahub_dict["name"]
+            this_error["error"] = e.info
+            error_datasets.append(this_error)
 
         if "keywords" in datahub_dict:
             tags = []
@@ -168,3 +180,6 @@ for index, row in df.iterrows():
                 entityUrn=dataset_urn, aspect=current_editable_properties
             )
             emitter.emit(mcp4)
+
+with open("load_output.txt", "w") as file:
+    file.write(json.dumps(error_datasets, indent=3))
